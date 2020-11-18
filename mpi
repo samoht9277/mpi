@@ -1,0 +1,84 @@
+#!/bin/bash
+
+#  mpi.
+#
+#  Created by Tomi Casarande on 14/07/2020.
+#  Copyright ? 2020 Tomi Casagrande. All rights reserved.
+
+# Colors.
+RST='\033[0m'                           # No Color, Reset.
+
+VI='\033[0;95m'                         # Violet.
+YE='\033[1;93m'                         # Yellow.
+CYA='\033[0;96m'                        # Cyan.
+GR='\033[0;32m'                         # Green.
+BAD='\033[1;31m'                        # Strong red. For errors.
+
+echo ""
+echo -e "Which ${VI}tweak${RST} do you want to compile?"
+echo ""
+
+cd /directory/to/tweak                  # <-- Change this.
+
+echo -e "Tweaks: ${YE} $(ls -m) ${RST}"
+
+read -p "Please, select one: " INPUT
+echo ""
+
+if [[ -d ./"$INPUT" && "$INPUT" != "" ]]; then
+
+    cd $INPUT
+    
+    echo "Usage:"
+    echo -e "${CYA}  [-i]${RST} Compile and install."
+    echo -e "${CYA}  [-c]${RST} Only compile."
+    echo -e "${CYA}  [-clean]${RST} Compile a clean package."
+    echo -e "${CYA}  [-fp]${RST} Compile a final package."
+    echo ""
+    
+    read -p "${INPUT} -" installation
+
+    case $installation in
+
+        i | I)
+        echo ""
+        echo -e "${CYA}==>${RST} Compiling and Installing ${GR}${INPUT}${RST}..."
+        echo ""
+        make package install
+        ;;
+            
+        c | C)
+        echo ""
+        echo -e "${CYA}==>${RST} Making ${GR}${INPUT}${RST}..."
+        echo ""
+        make package
+        ;;
+            
+        clean | CLEAN)
+        echo ""
+        echo -e "${CYA}==> ${RST}Making clean ${GR}${INPUT}${RST}..."
+        echo ""
+        make package clean
+        ;;
+            
+        fp | FP)
+        echo ""
+        echo -e "${CYA}==> ${RST}Making final package ${GR}${INPUT}${RST}"
+        echo ""
+        make package FINALPACKAGE=1
+        ;;
+            
+        *)
+        echo ""
+        echo -e "${BAD}No argument. Stop.${RST}"
+        exit
+        echo ""
+        ;;
+
+    esac
+    
+else
+    echo -e "${BAD}No such directory. Stop.${RST}"
+    exit
+    echo ""
+fi
